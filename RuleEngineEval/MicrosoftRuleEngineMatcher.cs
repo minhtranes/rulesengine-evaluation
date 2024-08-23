@@ -1,3 +1,4 @@
+using RulesEngine.Actions;
 using RulesEngine.Models;
 using Serilog;
 
@@ -10,6 +11,7 @@ public class MicrosoftRuleEngineMatcher
     public MicrosoftRuleEngineMatcher()
     {
         var reSettings = new ReSettings();
+        reSettings.CustomActions = new Dictionary<string, Func<ActionBase>>();
         reSettings.CustomActions
             .Add("LogWarningAction", () => new LogWarningAction());
         var workflowRules =
