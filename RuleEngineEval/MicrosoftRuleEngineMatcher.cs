@@ -14,8 +14,7 @@ public class MicrosoftRuleEngineMatcher
         {
             CustomActions = new Dictionary<string, Func<ActionBase>> { { "LogWarningAction", () => new LogWarningAction() } }
         };
-        var workflowRules =
-            File.ReadAllText("cpu_alert_rule.json");
+        var workflowRules = File.ReadAllText("cpu_alert_rule.json");
         _rulesEngine = new RulesEngine.RulesEngine(new[] { workflowRules }, reSettings);
         Log.Information("Initialized the rule engine");
     }
@@ -26,10 +25,14 @@ public class MicrosoftRuleEngineMatcher
         var vm = new VirtualMachine { CPUUsage = 85 }; // Example CPU usage
 
         // Execute the workflow rules with the input
-        var resultList = await _rulesEngine.ExecuteAllRulesAsync("CPUAlertWorkflow", vm);
+        var resultList = await _rulesEngine.ExecuteAllRulesAsync("CPUAlertWorkflow", new VirtualMachine { CPUUsage = 85 });
 
         // Check the results
         foreach (var result in resultList)
-            Log.Information("Action result: " + result.ActionResult.Output);
+        {
+            Log.Information("Result: "+result.IsSuccess);
+            Log.Information("Action R: " + result.ActionResult.Exception);
+        }
+            
     }
 }
