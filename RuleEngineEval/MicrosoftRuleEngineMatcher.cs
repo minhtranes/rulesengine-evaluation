@@ -15,7 +15,7 @@ public class MicrosoftRuleEngineMatcher
             CustomActions = new Dictionary<string, Func<ActionBase>> { { "LogWarningAction", () => new LogWarningAction() } }
         };
         var workflowRules =
-            File.ReadAllText("/Users/minhtranhoang/app/rd/rule-engine-evaluation/RuleEngineEval/cpu_alert_rule.json");
+            File.ReadAllText("cpu_alert_rule.json");
         _rulesEngine = new RulesEngine.RulesEngine(new[] { workflowRules }, reSettings);
         Log.Information("Initialized the rule engine");
     }
