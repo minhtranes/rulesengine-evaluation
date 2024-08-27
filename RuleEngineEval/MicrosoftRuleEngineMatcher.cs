@@ -10,10 +10,10 @@ public class MicrosoftRuleEngineMatcher
 
     public MicrosoftRuleEngineMatcher()
     {
-        var reSettings = new ReSettings();
-        reSettings.CustomActions = new Dictionary<string, Func<ActionBase>>();
-        reSettings.CustomActions
-            .Add("LogWarningAction", () => new LogWarningAction());
+        var reSettings = new ReSettings
+        {
+            CustomActions = new Dictionary<string, Func<ActionBase>> { { "LogWarningAction", () => new LogWarningAction() } }
+        };
         var workflowRules =
             File.ReadAllText("/Users/minhtranhoang/app/rd/rule-engine-evaluation/RuleEngineEval/cpu_alert_rule.json");
         _rulesEngine = new RulesEngine.RulesEngine(new[] { workflowRules }, reSettings);

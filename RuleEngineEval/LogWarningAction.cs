@@ -10,6 +10,7 @@ public class LogWarningAction : ActionBase
     {
         var message = context.GetContext<string>("message");
         Log.Warning($"WARN {message}");
+        Log.Information("Running...");
         return new ValueTask<object>(ValueTask.CompletedTask);
     }
 }
