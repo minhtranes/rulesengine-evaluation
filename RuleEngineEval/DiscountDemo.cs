@@ -44,7 +44,6 @@ public class DiscountDemo
         var wfr = db.Workflows.Include(i => i.Rules).ThenInclude(i => i.Rules).ToArray();
 
         var bre = new RulesEngine.RulesEngine(wfr, null);
-
         string discountOffered = "No discount offered.";
 
         List<RuleResultTree> resultList = bre.ExecuteAllRulesAsync("Discount", inputs).Result;
