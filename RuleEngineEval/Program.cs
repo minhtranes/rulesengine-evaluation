@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<RulesEngineDemoContext>();
 builder.Services.AddScoped<MicrosoftRuleEngineMatcher>();
 builder.Services.AddScoped<DiscountDemo>();
 builder.Services.AddControllers();

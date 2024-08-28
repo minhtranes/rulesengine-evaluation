@@ -1,61 +1,35 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RulesEngine.Models;
 
 namespace RuleEngineEval;
 
 [ApiController]
-[Route("[controller]")]
+[Route("rule")]
 public class RuleEngineController : ControllerBase
 {
-    private readonly MicrosoftRuleEngineMatcher _matcher;
+    private RulesEngineDemoContext _context;
 
-    private readonly string[] summaries =
+    public RuleEngineController(RulesEngineDemoContext context)
     {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
-    public RuleEngineController(MicrosoftRuleEngineMatcher matcher)
-    {
-        _matcher = matcher;
+        _context = context;
     }
 
-    [HttpPost("Match")]
-    public void Match()
+    [HttpGet("workflow")]
+    public IActionResult Workflow()
     {
-        _matcher.Match();
+        var wk = _context.Workflows.Include(i => i.Rules).ThenInclude(i => i.Rules).ToArray();
+        return Ok(wk);
     }
 
-    [HttpGet("Forecast")]
-    public WeatherForecast Forecast()
+    [HttpPost("workflow")]
+    public IActionResult Update(Workflow[] workflows)
     {
-        return Enumerable
-            .Range(1, 5)
-            .Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .First();
-    }
-
-    [HttpGet("DoForecast")]
-    public WeatherForecast DoForecast()
-    {
-        return Enumerable
-            .Range(1, 5)
-            .Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .First();
-    }
-
-    public record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-    {
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        foreach (var item in workflows)
+        {
+            _context.Update(item);
+        }
+        _context.SaveChanges();
+        return Ok();
     }
 }
