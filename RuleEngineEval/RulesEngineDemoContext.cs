@@ -9,7 +9,11 @@ public class RulesEngineDemoContext: RulesEngineContext
     public RulesEngineDemoContext()
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
-        var path = Environment.GetFolderPath(folder);
+        var path = Directory.GetCurrentDirectory()+"/Data/";// Environment.GetFolderPath(folder);
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
         DbPath = $"{path}{System.IO.Path.DirectorySeparatorChar}RulesEngineDemo.db";
     }
     protected override void OnConfiguring(DbContextOptionsBuilder options)
