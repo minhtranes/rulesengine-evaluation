@@ -23,14 +23,13 @@ public class DiscountDemoDynamic
         Log.Information("Matching the rule dynamically...");
 
         var wfr = db.Workflows.Include(i => i.Rules).ThenInclude(i => i.Rules).ToArray();
-
         var bre = new RulesEngine.RulesEngine(wfr, null);
 
-        //RuleParameter[] rParams =  inputs
-        //        .Select((inp, i) => RuleParameter.Create<dynamic>("input" + (i + 1), inp))
-        //        .ToArray();
+        var rParams = inputs
+                .Select((inp, idx) => RuleParameter.Create<dynamic>($"input{idx+1}", inp))
+                .ToArray();
+        var resultList = bre.ExecuteAllRulesAsync("Discount", rParams).Result;
 
-        List<RuleResultTree> resultList = bre.ExecuteAllRulesAsync("Discount", inputs).Result;
         return resultList
             .Select(r =>
             {
