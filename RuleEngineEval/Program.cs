@@ -11,6 +11,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<RulesEngineDemoContext>();
 builder.Services.AddScoped<MicrosoftRuleEngineMatcher>();
 builder.Services.AddScoped<DiscountDemo>();
+builder.Services.AddScoped<DiscountDemoDynamic>();
 builder.Services.AddControllers();
 
 var app = builder.Build();

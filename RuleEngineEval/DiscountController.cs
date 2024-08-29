@@ -8,10 +8,12 @@ namespace RuleEngineEval;
 public class DiscountController : ControllerBase
 {
     private readonly DiscountDemo _matcher;
+    private readonly DiscountDemoDynamic _dynamicMatcher;
 
-    public DiscountController(DiscountDemo matcher)
+    public DiscountController(DiscountDemo matcher, DiscountDemoDynamic dynamicMatcher)
     {
         _matcher = matcher;
+        _dynamicMatcher = dynamicMatcher;
     }
 
     [HttpPost("discount")]
@@ -21,7 +23,7 @@ public class DiscountController : ControllerBase
         {
             if (request == null)
             {
-                return Ok(_matcher.Match());
+                return Ok(_dynamicMatcher.Match());
             }
             else
             {
