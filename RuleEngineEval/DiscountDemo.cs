@@ -64,20 +64,6 @@ public class DiscountDemo
                         dicountRequest.TelemetryInfo
             };
 
-        //var files = Directory.GetFiles(Directory.GetCurrentDirectory(), "Discount.json", SearchOption.AllDirectories);
-        //if (files == null || files.Length == 0)
-        //    throw new Exception("Rules not found.");
-
-        //var fileData = File.ReadAllText(files[0]);
-        //var workflow = JsonSerializer.Deserialize<List<Workflow>>(fileData);
-
-        //RulesEngineDemoContext db = new RulesEngineDemoContext();
-        //if (db.Database.EnsureCreated())
-        //{
-        //    db.Workflows.AddRange(workflow);
-        //    db.SaveChanges();
-        //}
-
         var wfr = db.Workflows.Include(i => i.Rules).ThenInclude(i => i.Rules).ToArray();
 
         var bre = new RulesEngine.RulesEngine(wfr, null);
