@@ -52,7 +52,7 @@ public class DiscountDemoDynamic
         dynamic input2 = JsonSerializer.Deserialize<ExpandoObject>(orderInfo);
         dynamic input3 = JsonSerializer.Deserialize<ExpandoObject>(telemetryInfo);
         dynamic input1 = JsonSerializer.Deserialize<ExpandoObject>(basicInfo);
-
+        
         DiscountRuleResult[] results = Match(new dynamic[] { input1, input2, input3 });
         foreach (var item in results)
         {
