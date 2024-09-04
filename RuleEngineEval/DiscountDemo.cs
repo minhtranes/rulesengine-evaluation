@@ -43,6 +43,14 @@ public class TelemetryInfo
     public int percentageOfBuyingToVisit { get; set; }
 }
 
+public static class Utils
+{
+    public static bool isValidEmail(string email)
+    {
+        return email.Contains("@");
+    }
+}
+
 public class DiscountDemo
 {
     private RulesEngineDemoContext db;
@@ -65,8 +73,11 @@ public class DiscountDemo
             };
 
         var wfr = db.Workflows.Include(i => i.Rules).ThenInclude(i => i.Rules).ToArray();
-
-        var bre = new RulesEngine.RulesEngine(wfr, null);
+        var reSettings = new ReSettings()
+        {
+            CustomTypes = new Type[]{typeof(Utils)}
+        };
+        var bre = new RulesEngine.RulesEngine(wfr, reSettings);
 
         RuleParameter[] rParams = inputs
                 .Select((inp, i) => RuleParameter.Create<object>("input" + (i + 1), inp))

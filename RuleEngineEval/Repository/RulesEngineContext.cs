@@ -23,7 +23,11 @@ public class RulesEngineContext : DbContext
             entity.Ignore(b => b.WorkflowsToInject);
         });
 
-        modelBuilder.Entity<Rule>().HasOne<Rule>().WithMany(r => r.Rules).HasForeignKey("RuleNameFK");
+        modelBuilder
+            .Entity<Rule>()
+            .HasOne<Rule>()
+            .WithMany(r => r.Rules)
+            .HasForeignKey("RuleNameFK");
 
         var serializationOptions = new JsonSerializerOptions(JsonSerializerDefaults.General);
 
@@ -35,15 +39,17 @@ public class RulesEngineContext : DbContext
                 c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                 c => c);
 
-            entity.Property(b => b.Properties)
-            .HasConversion(
+            entity
+                .Property(b => b.Properties)
+                .HasConversion(
                 v => JsonSerializer.Serialize(v, serializationOptions),
                 v => JsonSerializer.Deserialize<Dictionary<string, object>>(v, serializationOptions))
                 .Metadata
                 .SetValueComparer(valueComparer);
 
-            entity.Property(p => p.Actions)
-            .HasConversion(
+            entity
+                .Property(p => p.Actions)
+                .HasConversion(
                 v => JsonSerializer.Serialize(v, serializationOptions),
                v => JsonSerializer.Deserialize<RuleActions>(v, serializationOptions));
 
