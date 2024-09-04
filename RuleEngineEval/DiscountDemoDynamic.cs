@@ -57,9 +57,9 @@ public class DiscountDemoDynamic
         string orderInfo = """{"totalOrders": 5,"recurringItems": 2}""";
         string telemetryInfo = """{"noOfVisitsPerMonth": 10,"percentageOfBuyingToVisit": 15}""";
 
-        var input2 = JsonSerializer.Deserialize<dynamic>(orderInfo);
-        var input3 = JsonSerializer.Deserialize<dynamic>(telemetryInfo);
-        var input1 = JsonSerializer.Deserialize<dynamic>(basicInfo);
+        var input1 = JsonSerializer.Deserialize<ExpandoObject>(basicInfo);
+        var input2 = JsonSerializer.Deserialize<ExpandoObject>(orderInfo);
+        var input3 = JsonSerializer.Deserialize<ExpandoObject>(telemetryInfo);
         
         DiscountRuleResult[] results = Match([input1, input2, input3]);
         foreach (var item in results)
