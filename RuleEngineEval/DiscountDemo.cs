@@ -1,10 +1,7 @@
-﻿using RulesEngine.Models;
-using System.Dynamic;
-using static RulesEngine.Extensions.ListofRuleResultTreeExtension;
+﻿using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
+using RulesEngine.Models;
 using Serilog;
-
 
 namespace RuleEngineEval;
 
@@ -53,7 +50,7 @@ public static class Utils
 
 public class DiscountDemo
 {
-    private RulesEngineDemoContext db;
+    private readonly RulesEngineDemoContext db;
 
     public DiscountDemo(RulesEngineDemoContext db)
     {
@@ -62,57 +59,60 @@ public class DiscountDemo
 
     public DiscountRuleResult[] Match(DiscountRequest dicountRequest)
     {
-
         Log.Information("Matching the rule...");
 
         var inputs = new object[]
-            {
-                        dicountRequest.BasicInfo,
-                        dicountRequest.OrderInfo,
-                        dicountRequest.TelemetryInfo
-            };
+        {
+            dicountRequest.BasicInfo,
+            dicountRequest.OrderInfo,
+            dicountRequest.TelemetryInfo
+        };
 
         var wfr = db.Workflows.Include(i => i.Rules).ThenInclude(i => i.Rules).ToArray();
-        var reSettings = new ReSettings()
+        var reSettings = new ReSettings
         {
-            CustomTypes = new Type[]{typeof(Utils)}
+            CustomTypes = new[] { typeof(Utils) }
         };
         var bre = new RulesEngine.RulesEngine(wfr, reSettings);
 
-        RuleParameter[] rParams = inputs
-                .Select((inp, i) => RuleParameter.Create<object>("input" + (i + 1), inp))
-                .ToArray();
+        var rParams = inputs
+            .Select((inp, i) => RuleParameter.Create($"input{i + 1}", inp))
+            .ToArray();
 
-        List<RuleResultTree> resultList = bre.ExecuteAllRulesAsync("Discount", rParams).Result;
+        var resultList = bre.ExecuteAllRulesAsync("Discount", rParams).Result;
+
+        foreach (var rs in resultList)
+            if (rs.ActionResult != null)
+                Log.Information($"Action result: {rs.ActionResult.Output}");
+
         return resultList
             .Select(r =>
             {
                 return new DiscountRuleResult
                 {
                     RuleName = r.Rule.RuleName,
-                    Result = r.IsSuccess ? $"Discount offered is {r.Rule.SuccessEvent} % over MRP." : "The user is not eligible for any discount."
+                    Result = r.IsSuccess
+                        ? $"Discount offered is {r.Rule.SuccessEvent} % over MRP."
+                        : "The user is not eligible for any discount."
                 };
             })
             .ToArray();
-
     }
+
     public DiscountRuleResult[] Match()
     {
         Log.Information("Build default BasicInfo request");
-        string basicInfo = """{"name": "hello","email": "abcy@xyz.com","creditHistory": "good","country": "canada","loyaltyFactor": 1,"totalPurchasesToDate": 10000}""";
-        string orderInfo = """{"totalOrders": 5,"recurringItems": 2}""";
-        string telemetryInfo = """{"noOfVisitsPerMonth": 10,"percentageOfBuyingToVisit": 15}""";
+        var basicInfo =
+            """{"name": "hello","email": "abcy@xyz.com","creditHistory": "good","country": "canada","loyaltyFactor": 1,"totalPurchasesToDate": 10000}""";
+        var orderInfo = """{"totalOrders": 5,"recurringItems": 2}""";
+        var telemetryInfo = """{"noOfVisitsPerMonth": 10,"percentageOfBuyingToVisit": 15}""";
 
-        OrderInfo input2 = JsonSerializer.Deserialize<OrderInfo>(orderInfo);
-        TelemetryInfo input3 = JsonSerializer.Deserialize<TelemetryInfo>(telemetryInfo);
-        BasicInfo input1 = JsonSerializer.Deserialize<BasicInfo>(basicInfo);
+        var input2 = JsonSerializer.Deserialize<OrderInfo>(orderInfo);
+        var input3 = JsonSerializer.Deserialize<TelemetryInfo>(telemetryInfo);
+        var input1 = JsonSerializer.Deserialize<BasicInfo>(basicInfo);
 
-        DiscountRuleResult[] results = Match(new DiscountRequest { BasicInfo = input1, OrderInfo = input2, TelemetryInfo = input3 });
-        foreach (var item in results)
-        {
-            Log.Information("{}: {}", item.RuleName, item.Result);
-        }
+        var results = Match(new DiscountRequest { BasicInfo = input1, OrderInfo = input2, TelemetryInfo = input3 });
+        foreach (var item in results) Log.Information("{}: {}", item.RuleName, item.Result);
         return results;
     }
 }
-
