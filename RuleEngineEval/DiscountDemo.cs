@@ -8,7 +8,7 @@ using Serilog;
 
 namespace RuleEngineEval;
 
-public class DicountRequest
+public class DiscountRequest
 {
     public BasicInfo BasicInfo { get; set; }
     public OrderInfo OrderInfo { get; set; }
@@ -52,7 +52,7 @@ public class DiscountDemo
         this.db = db;
     }
 
-    public DiscountRuleResult[] Match(DicountRequest dicountRequest)
+    public DiscountRuleResult[] Match(DiscountRequest dicountRequest)
     {
 
         Log.Information("Matching the rule...");
@@ -96,7 +96,7 @@ public class DiscountDemo
         TelemetryInfo input3 = JsonSerializer.Deserialize<TelemetryInfo>(telemetryInfo);
         BasicInfo input1 = JsonSerializer.Deserialize<BasicInfo>(basicInfo);
 
-        DiscountRuleResult[] results = Match(new DicountRequest { BasicInfo = input1, OrderInfo = input2, TelemetryInfo = input3 });
+        DiscountRuleResult[] results = Match(new DiscountRequest { BasicInfo = input1, OrderInfo = input2, TelemetryInfo = input3 });
         foreach (var item in results)
         {
             Log.Information("{}: {}", item.RuleName, item.Result);

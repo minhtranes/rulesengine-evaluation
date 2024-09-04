@@ -17,7 +17,7 @@ public class DiscountController : ControllerBase
     }
 
     [HttpPost("discount")]
-    public IActionResult Match(DicountRequest? request)
+    public IActionResult Match(DiscountRequest? request)
     {
         try
         {
