@@ -1,10 +1,10 @@
-﻿using RulesEngine.Models;
-using System.Dynamic;
-using static RulesEngine.Extensions.ListofRuleResultTreeExtension;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Converters;
+using RulesEngine.Models;
 using Serilog;
-
+using System.Collections;
+using System.Dynamic;
+using System.Linq.Dynamic.Core;
 
 namespace RuleEngineEval;
 
@@ -25,19 +25,29 @@ public class DiscountDemoDynamic
         var wfr = db.Workflows.Include(i => i.Rules).ThenInclude(i => i.Rules).ToArray();
         var reSettings = new ReSettings()
         {
-            CustomTypes = new Type[] { typeof(System.Text.Json.JsonElement) },
+            CustomTypes = [typeof(System.Text.Json.JsonElement)],
             EnableScopedParams = false,
-            IgnoreException=true,
+            IgnoreException = true,
             AutoRegisterInputType = true,
 
         };
         var bre = new RulesEngine.RulesEngine(wfr, null);
-
+        foreach (dynamic inp in inputs)
+        {
+            if (inp == null)
+            {
+                Log.Warning("null input");
+            }
+            else
+            {
+                AbcCreateAbstractClassType(inp);
+            }
+        }
         var rParams = inputs
-                .Select((inp, idx) => RuleParameter.Create<dynamic>($"input{idx+1}", inp))
+                .Select((inp, idx) => RuleParameter.Create<dynamic>($"input{idx + 1}", inp))
                 .ToArray();
-        var resultList = bre.ExecuteAllRulesAsync("Discount", rParams).Result;
-        
+        var resultList = bre.ExecuteAllRulesAsync("Discount", inputs).Result;
+
         return resultList
             .Select(r =>
             {
@@ -50,6 +60,50 @@ public class DiscountDemoDynamic
             .ToArray();
 
     }
+
+    private static Type AbcCreateAbstractClassType(dynamic input)
+    {
+        List<DynamicProperty> props = new List<DynamicProperty>();
+
+        if (input == null)
+        {
+            return typeof(object);
+        }
+        if (!(input is ExpandoObject))
+        {
+            return input.GetType();
+        }
+
+        else
+        {
+            foreach (var expando in (IDictionary<string, object>)input)
+            {
+                Type value;
+                if (expando.Value is IList)
+                {
+                    if (((IList)expando.Value).Count == 0)
+                        value = typeof(List<object>);
+                    else
+                        value = typeof(List<object>);
+                    //else
+                    //{
+                    //    var internalType = AbcCreateAbstractClassType(((IList)expando.Value)[0]);
+                    //    value = new List<object>().Cast(internalType).ToList(internalType).GetType();
+                    //} 
+
+                }
+                else
+                {
+                    value = AbcCreateAbstractClassType(expando.Value);
+                }
+                props.Add(new DynamicProperty(expando.Key, value));
+            }
+        }
+
+        var type = DynamicClassFactory.CreateType(props);
+        return type;
+    }
+
     public DiscountRuleResult[] Match()
     {
         Log.Information("Build default BasicInfo request");
@@ -57,10 +111,20 @@ public class DiscountDemoDynamic
         string orderInfo = """{"totalOrders": 5,"recurringItems": 2}""";
         string telemetryInfo = """{"noOfVisitsPerMonth": 10,"percentageOfBuyingToVisit": 15}""";
 
-        var input1 = JsonSerializer.Deserialize<ExpandoObject>(basicInfo);
-        var input2 = JsonSerializer.Deserialize<ExpandoObject>(orderInfo);
-        var input3 = JsonSerializer.Deserialize<ExpandoObject>(telemetryInfo);
-        
+
+        //var input1 = System.Text.Json.JsonSerializer.Deserialize<ExpandoObject>(basicInfo);
+        //var input2 = System.Text.Json.JsonSerializer.Deserialize<ExpandoObject>(orderInfo);
+        //var input3 = System.Text.Json.JsonSerializer.Deserialize<ExpandoObject>(telemetryInfo);
+
+        var converter = new ExpandoObjectConverter();
+        var input1 = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(basicInfo, converter);
+        var input2 = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(orderInfo, converter);
+        var input3 = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(telemetryInfo, converter);
+
+        //var input1 = JsonConvert.DeserializeObject<ExpandoObject>(basicInfo);
+        //var input2 = JsonConvert.DeserializeObject<ExpandoObject>(orderInfo);
+        //var input3 = JsonConvert.DeserializeObject<ExpandoObject>(telemetryInfo);
+
         DiscountRuleResult[] results = Match([input1, input2, input3]);
         foreach (var item in results)
         {
