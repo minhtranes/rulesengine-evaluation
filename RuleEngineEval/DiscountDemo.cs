@@ -76,7 +76,7 @@ public class DiscountDemo
         var bre = new RulesEngine.RulesEngine(wfr, reSettings);
 
         var rParams = inputs
-            .Select((inp, i) => RuleParameter.Create($"input{i + 1}", inp))
+            .Select((inp, i) => RuleParameter.Create(inp.GetType().Name, inp))
             .ToArray();
 
         var resultList = bre.ExecuteAllRulesAsync("Discount", rParams).Result;
