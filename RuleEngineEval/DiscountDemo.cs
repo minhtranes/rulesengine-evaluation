@@ -82,8 +82,7 @@ public class DiscountDemo
         var resultList = bre.ExecuteAllRulesAsync("Discount", rParams).Result;
 
         foreach (var rs in resultList)
-            if (rs.ActionResult != null)
-                Log.Information($"Action result: {rs.ActionResult.Output}");
+            Log.Information($"Action result: {rs.ActionResult.Output}");
 
         return resultList
             .Select(r =>

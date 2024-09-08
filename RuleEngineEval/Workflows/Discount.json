@@ -16,10 +16,9 @@
             }
           },
           "OnFailure": {
-            "Name": "EvaluateRule",
+            "Name": "OutputExpression",
             "Context": {
-              "workflowName": "Discount",
-              "ruleName": "GiveDiscount10"
+              "Expression": "BasicInfo.loyaltyFactor"
             }
           }
         }
@@ -36,6 +35,12 @@
             "Context": {
               "Expression": "BasicInfo.loyaltyFactor * 0.9"
             }
+          },
+          "OnFailure": {
+            "Name": "OutputExpression",
+            "Context": {
+              "Expression": "BasicInfo.loyaltyFactor"
+            }
           }
         }
       },
@@ -51,6 +56,12 @@
             "Context": {
               "Expression": "BasicInfo.loyaltyFactor * 0.9"
             }
+          },
+          "OnFailure": {
+            "Name": "OutputExpression",
+            "Context": {
+              "Expression": "BasicInfo.loyaltyFactor"
+            }
           }
         }
       },
@@ -65,6 +76,12 @@
             "Name": "OutputExpression",
             "Context": {
               "Expression": "BasicInfo.loyaltyFactor * 0.9"
+            }
+          },
+          "OnFailure": {
+            "Name": "OutputExpression",
+            "Context": {
+              "Expression": "BasicInfo.loyaltyFactor"
             }
           }
         }
@@ -88,7 +105,21 @@
             "ErrorType": "Error",
             "Expression": "OrderInfo.totalOrders > 15"
           }
-        ]
+        ],
+        "Actions": {
+          "OnSuccess": {
+            "Name": "OutputExpression",
+            "Context": {
+              "Expression": "BasicInfo.loyaltyFactor * 0.9"
+            }
+          },
+          "OnFailure": {
+            "Name": "OutputExpression",
+            "Context": {
+              "Expression": "BasicInfo.loyaltyFactor"
+            }
+          }
+        }
       },
       {
         "RuleName": "GiveDiscount35NestedAndExample",
@@ -115,7 +146,21 @@
             "ErrorType": "Error",
             "Expression": "OrderInfo.totalOrders > 15 AND TelemetryInfo.noOfVisitsPerMonth > 25"
           }
-        ]
+        ],
+        "Actions": {
+          "OnSuccess": {
+            "Name": "OutputExpression",
+            "Context": {
+              "Expression": "BasicInfo.loyaltyFactor * 0.9"
+            }
+          },
+          "OnFailure": {
+            "Name": "OutputExpression",
+            "Context": {
+              "Expression": "BasicInfo.loyaltyFactor"
+            }
+          }
+        }
       }
     ]
   }
