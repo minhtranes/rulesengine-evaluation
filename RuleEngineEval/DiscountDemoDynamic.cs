@@ -28,16 +28,16 @@ public class DiscountDemoDynamic
         };
         var bre = new RulesEngine.RulesEngine(wfr, reSettings);
 
-        //string[] names = ["BasicInfo", "OrderInfo", "TelemetryInfo"];
-        //var prams = names
-        //        .Select((name, idx) => RuleParameter.Create<dynamic>(name, inputs[idx]))
-        //        .ToArray();
-        //var resultList = bre.ExecuteAllRulesAsync("Discount", prams).Result;
+        string[] names = ["BasicInfo", "OrderInfo", "TelemetryInfo"];
+        var prams = names
+                .Select((name, idx) => new RuleParameter(name, inputs[idx]))
+                .ToArray();
+        var resultList = bre.ExecuteAllRulesAsync("Discount", prams).Result;
 
         //var rParams = inputs
         //        .Select((inp, idx) => RuleParameter.Create<dynamic>($"input{idx + 1}", inp))
         //        .ToArray();
-        var resultList = bre.ExecuteAllRulesAsync("Discount", inputs).Result;
+        //var resultList = bre.ExecuteAllRulesAsync("Discount", inputs).Result;
 
 
         return resultList

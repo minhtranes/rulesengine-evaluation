@@ -17,7 +17,7 @@ public class RulesEngineDemoContext : RulesEngineContext
         }
         DbPath = $"{path}{System.IO.Path.DirectorySeparatorChar}RulesEngineDemo.db";
 
-        var files = Directory.GetFiles(Directory.GetCurrentDirectory(), "Discount.json", SearchOption.AllDirectories);
+        var files = Directory.GetFiles(Directory.GetCurrentDirectory(), "Discount1.json", SearchOption.AllDirectories);
         if (files == null || files.Length == 0)
             throw new Exception("Rules not found.");
         var fileData = File.ReadAllText(files[0]);
