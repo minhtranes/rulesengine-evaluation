@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Converters;
 using RulesEngine.Models;
 using Serilog;
 using System.Collections;
@@ -25,28 +24,21 @@ public class DiscountDemoDynamic
         var wfr = db.Workflows.Include(i => i.Rules).ThenInclude(i => i.Rules).ToArray();
         var reSettings = new ReSettings()
         {
-            CustomTypes = [typeof(System.Text.Json.JsonElement)],
-            EnableScopedParams = false,
-            IgnoreException = true,
-            AutoRegisterInputType = true,
-
+            CustomTypes = [typeof(System.Text.Json.JsonElement), typeof(Utils)]
         };
-        var bre = new RulesEngine.RulesEngine(wfr, null);
-        foreach (dynamic inp in inputs)
-        {
-            if (inp == null)
-            {
-                Log.Warning("null input");
-            }
-            else
-            {
-                AbcCreateAbstractClassType(inp);
-            }
-        }
-        var rParams = inputs
-                .Select((inp, idx) => RuleParameter.Create<dynamic>($"input{idx + 1}", inp))
-                .ToArray();
+        var bre = new RulesEngine.RulesEngine(wfr, reSettings);
+
+        //string[] names = ["BasicInfo", "OrderInfo", "TelemetryInfo"];
+        //var prams = names
+        //        .Select((name, idx) => RuleParameter.Create<dynamic>(name, inputs[idx]))
+        //        .ToArray();
+        //var resultList = bre.ExecuteAllRulesAsync("Discount", prams).Result;
+
+        //var rParams = inputs
+        //        .Select((inp, idx) => RuleParameter.Create<dynamic>($"input{idx + 1}", inp))
+        //        .ToArray();
         var resultList = bre.ExecuteAllRulesAsync("Discount", inputs).Result;
+
 
         return resultList
             .Select(r =>
@@ -107,19 +99,19 @@ public class DiscountDemoDynamic
     public DiscountRuleResult[] Match()
     {
         Log.Information("Build default BasicInfo request");
-        string basicInfo = """{"name": "hello","email": "abcy@xyz.com","creditHistory": "good","country": "india","loyaltyFactor": 3,"totalPurchasesToDate": 12000}""";
+        string basicInfo = """{"name": "hello","email": "abcy@xyz.com","creditHistory": "good","country": "india","loyaltyFactor": 2,"totalPurchasesToDate": 12000}""";
         string orderInfo = """{"totalOrders": 5,"recurringItems": 2}""";
         string telemetryInfo = """{"noOfVisitsPerMonth": 10,"percentageOfBuyingToVisit": 15}""";
 
 
-        //var input1 = System.Text.Json.JsonSerializer.Deserialize<ExpandoObject>(basicInfo);
-        //var input2 = System.Text.Json.JsonSerializer.Deserialize<ExpandoObject>(orderInfo);
-        //var input3 = System.Text.Json.JsonSerializer.Deserialize<ExpandoObject>(telemetryInfo);
+        var input1 = System.Text.Json.JsonSerializer.Deserialize<ExpandoObject>(basicInfo);
+        var input2 = System.Text.Json.JsonSerializer.Deserialize<ExpandoObject>(orderInfo);
+        var input3 = System.Text.Json.JsonSerializer.Deserialize<ExpandoObject>(telemetryInfo);
 
-        var converter = new ExpandoObjectConverter();
-        var input1 = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(basicInfo, converter);
-        var input2 = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(orderInfo, converter);
-        var input3 = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(telemetryInfo, converter);
+        //var converter = new ExpandoObjectConverter();
+        //var input1 = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(basicInfo, converter);
+        //var input2 = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(orderInfo, converter);
+        //var input3 = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(telemetryInfo, converter);
 
         //var input1 = JsonConvert.DeserializeObject<ExpandoObject>(basicInfo);
         //var input2 = JsonConvert.DeserializeObject<ExpandoObject>(orderInfo);

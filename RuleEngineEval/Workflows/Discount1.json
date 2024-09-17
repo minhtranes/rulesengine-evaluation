@@ -7,18 +7,18 @@
         "SuccessEvent": "10",
         "ErrorMessage": "One or more adjust rules failed.",
         "ErrorType": "Error",
-        "Expression": "input1.country = \"india\" AND Utils.isValidEmail(input1.email) == true AND input1.loyaltyFactor <= 2 AND input1.totalPurchasesToDate >= 5000 AND input2.totalOrders > 2 AND input3.noOfVisitsPerMonth > 2",
+        "Expression": "BasicInfo.country = \"india\" AND Utils.isValidEmail(BasicInfo.email) == true AND BasicInfo.loyaltyFactor <= 2 AND BasicInfo.totalPurchasesToDate >= 5000 AND OrderInfo.totalOrders > 2 AND TelemetryInfo.noOfVisitsPerMonth > 2",
         "Actions": {
           "OnSuccess": {
             "Name": "OutputExpression",
             "Context": {
-              "Expression": "input1.loyaltyFactor * 0.9"
+              "Expression": "BasicInfo.loyaltyFactor * 0.9"
             }
           },
           "OnFailure": {
             "Name": "OutputExpression",
             "Context": {
-              "Expression": "input1.loyaltyFactor"
+              "Expression": "BasicInfo.loyaltyFactor"
             }
           }
         }
@@ -28,18 +28,18 @@
         "SuccessEvent": "20",
         "ErrorMessage": "One or more adjust rules failed.",
         "ErrorType": "Error",
-        "Expression": "input1.country = \"india\" AND input1.loyaltyFactor = 3 AND input1.totalPurchasesToDate >= 10000 AND input2.totalOrders > 2 AND input3.noOfVisitsPerMonth > 2",
+        "Expression": "BasicInfo.country = \"india\" AND BasicInfo.loyaltyFactor = 3 AND BasicInfo.totalPurchasesToDate >= 10000 AND OrderInfo.totalOrders > 2 AND TelemetryInfo.noOfVisitsPerMonth > 2",
         "Actions": {
           "OnSuccess": {
             "Name": "OutputExpression",
             "Context": {
-              "Expression": "input1.loyaltyFactor * 0.9"
+              "Expression": "BasicInfo.loyaltyFactor * 0.9"
             }
           },
           "OnFailure": {
             "Name": "OutputExpression",
             "Context": {
-              "Expression": "input1.loyaltyFactor"
+              "Expression": "BasicInfo.loyaltyFactor"
             }
           }
         }
@@ -49,18 +49,18 @@
         "SuccessEvent": "25",
         "ErrorMessage": "One or more adjust rules failed.",
         "ErrorType": "Error",
-        "Expression": "input1.country != \"india\" AND input1.loyaltyFactor >= 2 AND input1.totalPurchasesToDate >= 10000 AND input2.totalOrders > 2 AND input3.noOfVisitsPerMonth > 5",
+        "Expression": "BasicInfo.country != \"india\" AND BasicInfo.loyaltyFactor >= 2 AND BasicInfo.totalPurchasesToDate >= 10000 AND OrderInfo.totalOrders > 2 AND TelemetryInfo.noOfVisitsPerMonth > 5",
         "Actions": {
           "OnSuccess": {
             "Name": "OutputExpression",
             "Context": {
-              "Expression": "input1.loyaltyFactor * 0.9"
+              "Expression": "BasicInfo.loyaltyFactor * 0.9"
             }
           },
           "OnFailure": {
             "Name": "OutputExpression",
             "Context": {
-              "Expression": "input1.loyaltyFactor"
+              "Expression": "BasicInfo.loyaltyFactor"
             }
           }
         }
@@ -70,18 +70,18 @@
         "SuccessEvent": "30",
         "ErrorMessage": "One or more adjust rules failed.",
         "ErrorType": "Error",
-        "Expression": "input1.loyaltyFactor > 3 AND input1.totalPurchasesToDate >= 50000 AND input1.totalPurchasesToDate <= 100000 AND input2.totalOrders > 5 AND input3.noOfVisitsPerMonth > 15",
+        "Expression": "BasicInfo.loyaltyFactor > 3 AND BasicInfo.totalPurchasesToDate >= 50000 AND BasicInfo.totalPurchasesToDate <= 100000 AND OrderInfo.totalOrders > 5 AND TelemetryInfo.noOfVisitsPerMonth > 15",
         "Actions": {
           "OnSuccess": {
             "Name": "OutputExpression",
             "Context": {
-              "Expression": "input1.loyaltyFactor * 0.9"
+              "Expression": "BasicInfo.loyaltyFactor * 0.9"
             }
           },
           "OnFailure": {
             "Name": "OutputExpression",
             "Context": {
-              "Expression": "input1.loyaltyFactor"
+              "Expression": "BasicInfo.loyaltyFactor"
             }
           }
         }
@@ -97,26 +97,26 @@
             "RuleName": "IsLoyalAndHasGoodSpend",
             "ErrorMessage": "One or more adjust rules failed.",
             "ErrorType": "Error",
-            "Expression": "input1.loyaltyFactor > 3 AND input1.totalPurchasesToDate >= 50000 AND input1.totalPurchasesToDate <= 100000"
+            "Expression": "BasicInfo.loyaltyFactor > 3 AND BasicInfo.totalPurchasesToDate >= 50000 AND BasicInfo.totalPurchasesToDate <= 100000"
           },
           {
             "RuleName": "OrHasHighNumberOfTotalOrders",
             "ErrorMessage": "One or more adjust rules failed.",
             "ErrorType": "Error",
-            "Expression": "input2.totalOrders > 15"
+            "Expression": "OrderInfo.totalOrders > 15"
           }
         ],
         "Actions": {
           "OnSuccess": {
             "Name": "OutputExpression",
             "Context": {
-              "Expression": "input1.loyaltyFactor * 0.9"
+              "Expression": "BasicInfo.loyaltyFactor * 0.9"
             }
           },
           "OnFailure": {
             "Name": "OutputExpression",
             "Context": {
-              "Expression": "input1.loyaltyFactor"
+              "Expression": "BasicInfo.loyaltyFactor"
             }
           }
         }
@@ -129,35 +129,35 @@
         "Operator": "AndAlso",
         "Rules": [
           {
-            "RuleName": "IsLoyal",
+            "RuleName": "DiscountIsLoyal",
             "ErrorMessage": "One or more adjust rules failed.",
             "ErrorType": "Error",
-            "Expression": "input1.loyaltyFactor > 3"
+            "Expression": "BasicInfo.loyaltyFactor > 3"
           },
           {
-            "RuleName": "AndHasTotalPurchased100000",
+            "RuleName": "DiscountAndHasTotalPurchased100000",
             "ErrorMessage": "One or more adjust rules failed.",
             "ErrorType": "Error",
-            "Expression": "input1.totalPurchasesToDate >= 100000"
+            "Expression": "BasicInfo.totalPurchasesToDate >= 100000"
           },
           {
-            "RuleName": "AndOtherConditions",
+            "RuleName": "DiscountAndOtherConditions",
             "ErrorMessage": "One or more adjust rules failed.",
             "ErrorType": "Error",
-            "Expression": "input2.totalOrders > 15 AND input3.noOfVisitsPerMonth > 25"
+            "Expression": "OrderInfo.totalOrders > 15 AND TelemetryInfo.noOfVisitsPerMonth > 25"
           }
         ],
         "Actions": {
           "OnSuccess": {
             "Name": "OutputExpression",
             "Context": {
-              "Expression": "input1.loyaltyFactor * 0.9"
+              "Expression": "BasicInfo.loyaltyFactor * 0.9"
             }
           },
           "OnFailure": {
             "Name": "OutputExpression",
             "Context": {
-              "Expression": "input1.loyaltyFactor"
+              "Expression": "BasicInfo.loyaltyFactor"
             }
           }
         }
