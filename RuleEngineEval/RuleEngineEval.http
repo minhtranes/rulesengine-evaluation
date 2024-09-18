@@ -14,7 +14,7 @@ Content-Type: application/json
         "SuccessEvent": "10",
         "ErrorMessage": "One or more adjust rules failed.",
         "ErrorType": "Error",
-        "Expression": "BasicInfo.country = \"america\" AND Utils.isValidEmail(BasicInfo.email) == true AND BasicInfo.loyaltyFactor <= 2 AND BasicInfo.totalPurchasesToDate >= 5000 AND OrderInfo.totalOrders > 2 AND TelemetryInfo.noOfVisitsPerMonth > 2",
+        "Expression": "BasicInfo.country = \"america\" AND BasicInfo.metadata.count = 2 AND Utils.isValidEmail(BasicInfo.email) == true AND BasicInfo.loyaltyFactor <= 2 AND BasicInfo.totalPurchasesToDate >= 5000 AND OrderInfo.totalOrders > 2 AND TelemetryInfo.noOfVisitsPerMonth > 2",
         "Actions": {
           "OnSuccess": {
             "Name": "OutputExpression",
@@ -182,9 +182,12 @@ Content-Type: application/json
     "name": "hello",
     "email": "abcy@xyz.com",
     "creditHistory": "good",
-    "country": "india",
+    "country": "america",
     "loyaltyFactor": 2,
-    "totalPurchasesToDate": 12000
+    "totalPurchasesToDate": 12000,
+    "metadata": {
+      "count": 2
+    }
   },
   "OrderInfo": {
     "totalOrders": 5,
