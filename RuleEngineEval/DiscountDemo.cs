@@ -98,7 +98,7 @@ public class DiscountDemo
             .ToArray();
     }
 
-    public DiscountRuleResult[] Match()
+    public DiscountRuleResult[] Match(RuleValidationRequest? request)
     {
         Log.Information("Build default BasicInfo request");
         var basicInfo =

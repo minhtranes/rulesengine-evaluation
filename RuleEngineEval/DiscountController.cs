@@ -3,12 +3,17 @@ using Serilog;
 
 namespace RuleEngineEval;
 
+public class RuleValidationRequest
+{
+    private dynamic input { get; set; }
+}
+
 [ApiController]
 [Route("price")]
 public class DiscountController : ControllerBase
 {
-    private readonly DiscountDemo _matcher;
     private readonly DiscountDemoDynamic _dynamicMatcher;
+    private readonly DiscountDemo _matcher;
 
     public DiscountController(DiscountDemo matcher, DiscountDemoDynamic dynamicMatcher)
     {
@@ -17,18 +22,19 @@ public class DiscountController : ControllerBase
     }
 
     [HttpPost("discount")]
-    public IActionResult Match(DiscountRequest? request)
+    public IActionResult Match([FromBody] dynamic? request)
     {
         try
         {
-            if (request == null)
-            {
-                return Ok(_dynamicMatcher.Match());
-            }
-            else
-            {
-                return Ok(_matcher.Match(request));
-            }
+            // if (request == null)
+            // {
+            //     return Ok(_dynamicMatcher.Match(request));
+            // }
+            // else
+            // {
+            //     return Ok(_matcher.Match(request));
+            // }
+            return Ok(_dynamicMatcher.MatchDynamic(request));
         }
         catch (Exception ex)
         {

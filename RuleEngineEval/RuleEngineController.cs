@@ -1,35 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using RulesEngine.Models;
 
 namespace RuleEngineEval;
 
 [ApiController]
-[Route("rule")]
+[Route("workflow")]
 public class RuleEngineController : ControllerBase
 {
-    private RulesEngineDemoContext _context;
+    private readonly DiscountDemoDynamic _discountDemoDynamic;
 
-    public RuleEngineController(RulesEngineDemoContext context)
+    public RuleEngineController(DiscountDemoDynamic discountDemoDynamic)
     {
-        _context = context;
+        _discountDemoDynamic = discountDemoDynamic;
     }
 
-    [HttpGet("workflow")]
+    [HttpGet("current")]
     public IActionResult Workflow()
     {
-        var wk = _context.Workflows.Include(i => i.Rules).ThenInclude(i => i.Rules).ToArray();
-        return Ok(wk);
+        return Ok(_discountDemoDynamic.Workflows);
     }
 
-    [HttpPost("workflow")]
+    [HttpPost("update")]
     public IActionResult Update(Workflow[] workflows)
     {
-        foreach (var item in workflows)
-        {
-            _context.Update(item);
-        }
-        _context.SaveChanges();
-        return Ok();
+        return Ok(_discountDemoDynamic.UpdateRules(workflows));
     }
 }

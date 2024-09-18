@@ -8,10 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<RulesEngineDemoContext>();
-builder.Services.AddScoped<MicrosoftRuleEngineMatcher>();
-builder.Services.AddScoped<DiscountDemo>();
-builder.Services.AddScoped<DiscountDemoDynamic>();
+builder.Services.AddSingleton<RulesEngineDemoContext>();
+builder.Services.AddSingleton<MicrosoftRuleEngineMatcher>();
+builder.Services.AddSingleton<DiscountDemo>();
+builder.Services.AddSingleton<DiscountDemoDynamic>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
