@@ -1,8 +1,10 @@
 @RuleEngineEval_HostAddress = http://localhost:60405
 
+###
 GET {{RuleEngineEval_HostAddress}}/workflow/current
 Accept: application/json
 
+###
 POST {{RuleEngineEval_HostAddress}}/workflow/update
 Content-Type: application/json
 
