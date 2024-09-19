@@ -1,22 +1,29 @@
-﻿using System.Dynamic;
-using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RulesEngine.HelperFunctions;
 using RulesEngine.Models;
 using Serilog;
+using System.Dynamic;
+using System.Text.Json;
 
-namespace RuleEngineEval;
+namespace RuleEngineEval.Service;
 
-public class DiscountDemoDynamic
+public class DiscountRuleResult
+{
+    public string RuleName { get; set; }
+    public string Result { get; set; }
+}
+
+public class MicrosoftRulesEngineExService : IRuleEngineService
 {
     private readonly RulesEngineDemoContext db;
 
     private RulesEngine.RulesEngine? _engine;
 
-    public DiscountDemoDynamic(RulesEngineDemoContext db)
+    public MicrosoftRulesEngineExService(RulesEngineDemoContext db)
     {
         this.db = db;
     }
+
 
     public Workflow[]? Workflows { get; private set; }
 
@@ -82,7 +89,7 @@ public class DiscountDemoDynamic
             .ToArray();
     }
 
-    public DiscountRuleResult[] MatchDynamic(dynamic? request)
+    public DiscountRuleResult[] Match(dynamic? request)
     {
         Log.Information("Build the input parameters");
 
@@ -101,30 +108,8 @@ public class DiscountDemoDynamic
         return results;
     }
 
-    public DiscountRuleResult[] Match(DiscountRequest? request)
+    public Workflow[] CurrentWorkflows()
     {
-        Log.Information("Build default BasicInfo request");
-        var basicInfo =
-            """{"name": "hello","email": "abcy@xyz.com","creditHistory": "good","country": "india","loyaltyFactor": 2,"totalPurchasesToDate": 12000}""";
-        var orderInfo = """{"totalOrders": 5,"recurringItems": 2}""";
-        var telemetryInfo = """{"noOfVisitsPerMonth": 10,"percentageOfBuyingToVisit": 15}""";
-
-
-        var input1 = JsonSerializer.Deserialize<ExpandoObject>(basicInfo);
-        var input2 = JsonSerializer.Deserialize<ExpandoObject>(orderInfo);
-        var input3 = JsonSerializer.Deserialize<ExpandoObject>(telemetryInfo);
-
-        //var converter = new ExpandoObjectConverter();
-        //var input1 = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(basicInfo, converter);
-        //var input2 = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(orderInfo, converter);
-        //var input3 = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(telemetryInfo, converter);
-
-        //var input1 = JsonConvert.DeserializeObject<ExpandoObject>(basicInfo);
-        //var input2 = JsonConvert.DeserializeObject<ExpandoObject>(orderInfo);
-        //var input3 = JsonConvert.DeserializeObject<ExpandoObject>(telemetryInfo);
-
-        var results = Match([input1, input2, input3]);
-        foreach (var item in results) Log.Information("{}: {}", item.RuleName, item.Result);
-        return results;
+        return Workflows;
     }
 }

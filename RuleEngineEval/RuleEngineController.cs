@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using RuleEngineEval.Service;
 using RulesEngine.Models;
 
 namespace RuleEngineEval;
@@ -7,22 +8,22 @@ namespace RuleEngineEval;
 [Route("workflow")]
 public class RuleEngineController : ControllerBase
 {
-    private readonly DiscountDemoDynamic _discountDemoDynamic;
+    private readonly IRuleEngineService RuleEngineService;
 
-    public RuleEngineController(DiscountDemoDynamic discountDemoDynamic)
+    public RuleEngineController(MicrosoftRulesEngineExService rulesEngineService)
     {
-        _discountDemoDynamic = discountDemoDynamic;
+        RuleEngineService = rulesEngineService;
     }
 
     [HttpGet("current")]
     public IActionResult Workflow()
     {
-        return Ok(_discountDemoDynamic.Workflows);
+        return Ok(RuleEngineService.CurrentWorkflows());
     }
 
     [HttpPost("update")]
     public IActionResult Update(Workflow[] workflows)
     {
-        return Ok(_discountDemoDynamic.UpdateRules(workflows));
+        return Ok(RuleEngineService.UpdateRules(workflows));
     }
 }

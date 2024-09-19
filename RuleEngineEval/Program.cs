@@ -1,4 +1,5 @@
 using RuleEngineEval;
+using RuleEngineEval.Service;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -9,9 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<RulesEngineDemoContext>();
-builder.Services.AddSingleton<MicrosoftRuleEngineMatcher>();
-builder.Services.AddSingleton<DiscountDemo>();
-builder.Services.AddSingleton<DiscountDemoDynamic>();
+builder.Services.AddSingleton<IRuleEngineService, MicrosoftRulesEngineExService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
