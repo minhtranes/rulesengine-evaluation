@@ -174,7 +174,7 @@ Content-Type: application/json
 ]
 
 ###
-POST {{RuleEngineEval_HostAddress}}/price/discount
+POST {{RuleEngineEval_HostAddress}}/rules/execute
 Content-Type: application/json
 
 {
@@ -202,7 +202,7 @@ Content-Type: application/json
 ###
 ###
 ###
-@RuleEngineEval_HostAddress = http://localhost:5000
+@RuleEngineEval_HostAddress = http://localhost:60405
 
 GET {{RuleEngineEval_HostAddress}}/RuleEngine/DoForecast
 Accept: application/json

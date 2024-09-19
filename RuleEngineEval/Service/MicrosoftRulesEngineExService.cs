@@ -13,36 +13,23 @@ public class DiscountRuleResult
     public string Result { get; set; }
 }
 
-public class MicrosoftRulesEngineExService : IRuleEngineService
+public class MicrosoftRulesEngineExService : IRulesEngineService
 {
-    private readonly RulesEngineDemoContext db;
+    private readonly RulesEngineDemoContext _context;
 
-    private RulesEngine.RulesEngine? _engine;
+    private RulesEngine.RulesEngine _engine;
 
     public MicrosoftRulesEngineExService(RulesEngineDemoContext db)
     {
-        this.db = db;
+        this._context = db;
+        InitializeEngine();
     }
 
-
-    public Workflow[]? Workflows { get; private set; }
-
-    public DiscountRuleResult[] Match(dynamic[] inputs)
-    {
-        Log.Information("Matching the rule dynamically...");
-
-        var bre = GetRulesEngine();
-
-        string[] names = ["BasicInfo", "OrderInfo", "TelemetryInfo"];
-        var prams = names
-            .Select((name, idx) => new RuleParameter(name, inputs[idx]))
-            .ToArray();
-        return MatchRuleWithNamedParams(bre, prams);
-    }
+    private Workflow[] _workflows;
 
     public bool UpdateRules(Workflow[] workflows)
     {
-        Workflows = workflows;
+        _workflows = workflows;
         InitializeEngine();
         return true;
     }
@@ -57,11 +44,11 @@ public class MicrosoftRulesEngineExService : IRuleEngineService
     private void InitializeEngine()
     {
         Log.Information("Initialize the engine");
-        var wf = Workflows;
+        var wf = _workflows;
         if (wf == null)
         {
             Log.Warning("There is no workflow set, use the default workflow from database");
-            wf = db.Workflows.Include(i => i.Rules).ThenInclude(i => i.Rules).ToArray();
+            wf = _context.Workflows.Include(i => i.Rules).ThenInclude(i => i.Rules).ToArray();
         }
 
         var reSettings = new ReSettings
@@ -110,6 +97,7 @@ public class MicrosoftRulesEngineExService : IRuleEngineService
 
     public Workflow[] CurrentWorkflows()
     {
-        return Workflows;
+        return _workflows;
     }
+
 }

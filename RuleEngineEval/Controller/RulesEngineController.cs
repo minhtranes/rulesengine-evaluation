@@ -2,17 +2,17 @@ using Microsoft.AspNetCore.Mvc;
 using RuleEngineEval.Service;
 using Serilog;
 
-namespace RuleEngineEval;
+namespace RuleEngineEval.Controller;
 
 [ApiController]
 [Route("rules")]
 public class RulesEngineController : ControllerBase
 {
-    private readonly MicrosoftRulesEngineExService _dynamicMatcher;
+    private readonly IRulesEngineService _rulesEngineService;
 
-    public RulesEngineController(MicrosoftRulesEngineExService dynamicMatcher)
+    public RulesEngineController(IRulesEngineService rulesEngineService)
     {
-        _dynamicMatcher = dynamicMatcher;
+        _rulesEngineService = rulesEngineService;
     }
 
     [HttpPost("execute")]
@@ -20,11 +20,11 @@ public class RulesEngineController : ControllerBase
     {
         try
         {
-            return Ok(_dynamicMatcher.Match(request));
+            return Ok(_rulesEngineService.Match(request));
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex, "Failed to execute the rule");
             return StatusCode(500, "Failed to execute the rule matching");
         }
     }

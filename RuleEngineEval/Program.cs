@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<RulesEngineDemoContext>();
-builder.Services.AddSingleton<IRuleEngineService, MicrosoftRulesEngineExService>();
+builder.Services.AddSingleton<IRulesEngineService, MicrosoftRulesEngineExService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
