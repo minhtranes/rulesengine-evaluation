@@ -1,7 +1,8 @@
+@RuleEngineEval_HostAddress = http://localhost:60405
+
 GET {{RuleEngineEval_HostAddress}}/workflow/current
 Accept: application/json
 
-###
 POST {{RuleEngineEval_HostAddress}}/workflow/update
 Content-Type: application/json
 
@@ -198,17 +199,3 @@ Content-Type: application/json
     "percentageOfBuyingToVisit": 15
   }
 }
-
-###
-###
-###
-@RuleEngineEval_HostAddress = http://localhost:60405
-
-GET {{RuleEngineEval_HostAddress}}/RuleEngine/DoForecast
-Accept: application/json
-
-###
-
-POST {{RuleEngineEval_HostAddress}}/RuleEngine/Match
-
-POST {{RuleEngineEval_HostAddress}}/discount/match

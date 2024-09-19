@@ -21,7 +21,7 @@ public class MicrosoftRulesEngineExService : IRulesEngineService
 
     public MicrosoftRulesEngineExService(RulesEngineDemoContext db)
     {
-        this._context = db;
+        _context = db;
         InitializeEngine();
     }
 
@@ -49,6 +49,7 @@ public class MicrosoftRulesEngineExService : IRulesEngineService
         {
             Log.Warning("There is no workflow set, use the default workflow from database");
             wf = _context.Workflows.Include(i => i.Rules).ThenInclude(i => i.Rules).ToArray();
+            _workflows = wf;
         }
 
         var reSettings = new ReSettings
